@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+<?import javafx.geometry.Insets?>
+
+<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.budgetapp.PrimaryController">
+   <children>
+   <Label text="Budget Manager" style="-fx-font-size: 20px;" />
+   
+   <!-- Input for Section Name -->
+   <TextField fx:id="nameInput" promptText="Enter Section Name" />
+   
+   <!-- Button to Create Section -->
+   <Button text="Add Section" onAction="#handleAddSection"/>
+   
+   <!-- Label to show the Grand Total -->
+   <Label fx:id="totalDisplay" text="Total: $0.00" />
+
+   <Button fx:id="primaryButton" text="Switch to Secondary View" onAction="#switchToSecondary"/>
+</children>
+
+</VBox>
