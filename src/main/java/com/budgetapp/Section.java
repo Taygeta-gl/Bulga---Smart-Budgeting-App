@@ -2,6 +2,7 @@ package com.budgetapp;
 
 public class Section {
     private static int idCounter = 0;
+    private int id;
     private String name;
     private Importance importance;
     private String description;
@@ -16,7 +17,7 @@ public class Section {
         this.base_cost = base_cost; // for that option we will have parent + children, so we will do both
         this.importance = importance;
         idCounter++;
-
+        this.id = ++idCounter;
     }
 
     // Constructor if amount is not provided, need to calculate
@@ -26,6 +27,7 @@ public class Section {
         this.base_cost = 0; // Default value, can be updated later
         this.importance = importance;
         idCounter++;
+        this.id = ++idCounter;
     }
 
     // Getters and Setters
@@ -116,7 +118,8 @@ public class Section {
     }
 
     public String toString() {
-        return "Section{name='" + name + "', importance=" + importance + ", base_cost=" + base_cost + ", grand_total=" + getGrandTotal() + "}";
+        return "Section{name='" + name + "', importance=" + importance + ", base_cost=" + base_cost + ", grand_total="
+                + getGrandTotal() + "}";
     }
 
 }

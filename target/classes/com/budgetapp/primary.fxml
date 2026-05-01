@@ -4,22 +4,29 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.geometry.Insets?>
 
 <VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.budgetapp.PrimaryController">
    <children>
-   <Label text="Budget Manager" style="-fx-font-size: 20px;" />
+   <Label text="Add New Section" style="-fx-font-size: 18;" />
    
-   <!-- Input for Section Name -->
-   <TextField fx:id="nameInput" promptText="Enter Section Name" />
+   <TextField fx:id="nameField" promptText="Name (e.g. Groceries)" />
+   <TextField fx:id="descField" promptText="Description" />
+   <TextField fx:id="costField" promptText="Base Cost (Leave empty for 0)" />
    
-   <!-- Button to Create Section -->
-   <Button text="Add Section" onAction="#handleAddSection"/>
-   
-   <!-- Label to show the Grand Total -->
-   <Label fx:id="totalDisplay" text="Total: $0.00" />
+   <!-- Dropdown for your Enum -->
+   <ComboBox fx:id="importancePicker" promptText="Select Importance" />
+   <ComboBox fx:id="parentPicker" promptText="Select Section for Subsection" />
 
-   <Button fx:id="primaryButton" text="Switch to Secondary View" onAction="#switchToSecondary"/>
+   <Button text="Add Section" onAction="#handleAddSection" />
+   <Button text="Add Subsection" onAction="#handleAddSubsection" />
+
+   <Label text="Current Sections:" />
+   <!-- This will show the sections in a list -->
+   <ListView fx:id="sectionListView" prefHeight="200" />
 </children>
+
 
 </VBox>
