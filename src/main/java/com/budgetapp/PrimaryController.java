@@ -2,55 +2,91 @@ package com.budgetapp;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TreeCell;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 
 public class PrimaryController {
-    @FXML
-    private TextField nameField, descField, costField;
-    @FXML
-    private ComboBox<Importance> importancePicker;
-    @FXML
-    private ComboBox<Section> parentPicker;
-    @FXML
-    private ListView<Section> sectionListView;
+    @FXML private TextField nameField, descField, costField;
+    @FXML private ComboBox<Importance> importancePicker;
+    @FXML private ComboBox<Section> parentPicker;
+    
+    // 1. Changed from ListView to TreeView
+    @FXML private TreeView<Section> sectionListView; 
 
     private Section rootSection = new Section("Root", "Master", Importance.HIGH);
 
+    
     @FXML
     public void initialize() {
-        // This fills the dropdown with LOW, MEDIUM, HIGH automatically
         importancePicker.getItems().setAll(Importance.values());
-        parentPicker.setItems(sectionListView.getItems());
+        
+        parentPicker.setConverter(new javafx.util.StringConverter<Section>() {
+        @Override
+        public String toString(Section section) {
+            return (section == null) ? "" : section.getName(); 
+        }
+        @Override
+        public Section fromString(String string) {
+            return null; 
+        }
+    });
+
+
+        // 2. Set up the Tree structure
+        TreeItem<Section> treeRoot = new TreeItem<>(rootSection);
+        sectionListView.setRoot(treeRoot);
+        sectionListView.setShowRoot(false); // Keeps it looking clean
+
+        // 3. This makes it look "Normal" (Name - Total)
+        sectionListView.setCellFactory(tv -> new TreeCell<Section>() {
+            @Override
+            protected void updateItem(Section item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.getName() + " - Total: $" + item.getGrandTotal() + "  [Base: $" + item.getbase_cost() + "]");
+                }
+            }
+        });
     }
 
     @FXML
     private void handleAddSection() {
+        
         Section newSection = createSectionFromFields();
-        if (newSection == null) {
-            return;
-        }
+        if (newSection == null) return;
 
         rootSection.addSubsection(newSection);
-        sectionListView.getItems().add(newSection);
+        
+        // Add to the visual tree
+        sectionListView.getRoot().getChildren().add(new TreeItem<>(newSection));
+        
+        // Update the dropdown so you can add subsections to this new section
+        parentPicker.getItems().add(newSection); 
         clearFields();
     }
 
     @FXML
     private void handleAddSubsection() {
-        Section selectedParent = parentPicker.getValue();
-        if (selectedParent == null) {
-            return; // no parent selected, do nothing
-        }
-
+        TreeItem<Section> selectedTreeItem = sectionListView.getSelectionModel().getSelectedItem();
+        
+        if (selectedTreeItem == null) {
+            System.out.println("Please select a parent in the tree first!");
+        return;
+    }
         Section newSection = createSectionFromFields();
-        if (newSection == null) {
-            return;
-        }
+        if (newSection == null) return;
 
-        selectedParent.addSubsection(newSection);
-        sectionListView.getItems().add(newSection);
+        selectedTreeItem.getValue().addSubsection(newSection);
+        
+        // Find the parent in the tree and add the child visually
+        selectedTreeItem.getChildren().add(new TreeItem<>(newSection));
+        selectedTreeItem.setExpanded(true);
+        
+        parentPicker.getItems().add(newSection); 
         clearFields();
     }
 
@@ -59,21 +95,11 @@ public class PrimaryController {
         String desc = descField.getText();
         Importance imp = importancePicker.getValue();
         String costRaw = costField.getText();
-
-        if (name.isEmpty() || imp == null) {
-            return null;
-        }
-
-        if (costRaw.isEmpty()) {
-            return new Section(name, desc, imp);
-        }
-
+        if (name.isEmpty() || imp == null) return null;
         try {
-            double cost = Double.parseDouble(costRaw);
+            double cost = costRaw.isEmpty() ? 0 : Double.parseDouble(costRaw);
             return new Section(name, desc, cost, imp);
-        } catch (NumberFormatException e) {
-            return null;
-        }
+        } catch (NumberFormatException e) { return null; }
     }
 
     private void clearFields() {

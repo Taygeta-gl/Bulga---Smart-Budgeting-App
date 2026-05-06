@@ -1,3 +1,4 @@
+com\budgetapp\PrimaryController$1.class
 com\budgetapp\Section.class
 module-info.class
 com\budgetapp\Main.class
@@ -5,3 +6,4 @@ com\budgetapp\SecondaryController.class
 com\budgetapp\App.class
 com\budgetapp\Importance.class
 com\budgetapp\PrimaryController.class
+com\budgetapp\PrimaryController$2.class
